@@ -2,7 +2,7 @@
 
 def generate_insert(table_name, field_value_dict):
     '''
-    Takes:
+    Parameters:
         1. string table_name
         2. dictionary of values {column_name: field_value}
     
