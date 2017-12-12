@@ -8,16 +8,21 @@ def prompt_for_filename():
     '''
     Returns a string of the filename
     '''
-    pass
+    filename = input("Data file to load (enclose in quotes) >> ")
+
+    return filename
 
 
-def check_file_size(filename):
+def get_file_size(filename):
     '''
     Takes a string filename
 
     Returns a float of the size of the file
     '''
-    pass
+    if os.path.isfile(filename):
+        file_info = os.stat(filename)
+
+    return file_info.st_size
 
 
 def user_prompt_column_labels():
@@ -57,7 +62,10 @@ def read_csv(filename, column_names):
 
 def main():
     # ask user for filename
+    filename = prompt_for_filename()
     # check if filesize is acceptable
+    if get_file_size(filename) < 1000000000:
+        print('\nfile:{} is not too big.\n'.format(filename))
     # build list of column labels
     # read in csv and return list of dictionaries {'col_name1': 'field_value', 'col_name2': 'field_value',}
 
