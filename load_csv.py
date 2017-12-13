@@ -84,6 +84,7 @@ def read_csv(filename):
             for i in range(len(column_names)):
                 temp_dict[column_names[i]] = row[i]
             data_list.append(temp_dict)
+            temp_dict = {}
 
     return data_list
 
