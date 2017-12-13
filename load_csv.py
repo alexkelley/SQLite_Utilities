@@ -45,13 +45,15 @@ def user_prompt_column_labels(first_row):
         
     column_labels = []
     for i, label in enumerate(first_row):
-        print('{0}: {1}'.format(i, label))
-        new_label = input('New label for {} (blank leaves label unchanged) >> '.format(i))
+        print('\n{0}: {1}'.format(i, label))
+        new_label = input('New label for {} (Enter to leave label unchanged) >> '.format(i))
 
         if new_label:
             column_labels.append(new_label)
         else:
             column_labels.append(label)
+
+    print('\nColumn labels list created.\n')
 
     return (column_labels, flag)
 
@@ -79,7 +81,9 @@ def read_csv(filename):
             reader.seek(0)
 
         for row in reader:
-            data_list.append(row)
+            for i in range(len(column_names)):
+                temp_dict[column_names[i]] = row[i]
+            data_list.append(temp_dict)
 
     return data_list
 
@@ -88,7 +92,7 @@ def read_csv(filename):
 # Function Calls #
 ##################
 
-def main():
+def load_csv_main():
     # ask user for filename
     filename = prompt_for_filename()
     # check if filesize is acceptable
@@ -101,7 +105,8 @@ def main():
     
     # build list of column labels
     # return list of dictionaries {'col_name1': 'field_value', 'col_name2': 'field_value',}
+    return data
 
 
 if __name__ == '__main__':
-    main()
+    load_csv_main()

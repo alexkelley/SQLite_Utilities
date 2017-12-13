@@ -4,7 +4,10 @@ def generate_insert(table_name, field_value_dict):
     '''
     Parameters:
         1. string table_name
-        2. dictionary of values {column_name: field_value}
+        2. dictionary of values in the form:
+           {column_name1: field_value, 
+            column_name2: field_value,
+            ...}
     
     Returns:
         - string SQLite3 INSERT statement
