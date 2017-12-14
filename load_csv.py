@@ -86,7 +86,7 @@ def read_csv(filename):
             data_list.append(temp_dict)
             temp_dict = {}
 
-    return data_list
+    return (data_list, column_names)
 
 
 ##################
@@ -96,17 +96,14 @@ def read_csv(filename):
 def load_csv_main():
     # ask user for filename
     filename = prompt_for_filename()
+
     # check if filesize is acceptable
     if get_file_size(filename) < 1000000000:
         print('\nfile:{} is not too big.\n'.format(filename))
 
-    data = read_csv(filename)
+    data, column_names = read_csv(filename)
 
-    #print(data[:2])
-    
-    # build list of column labels
-    # return list of dictionaries {'col_name1': 'field_value', 'col_name2': 'field_value',}
-    return data
+    return (data, column_names)
 
 
 if __name__ == '__main__':

@@ -4,7 +4,7 @@ import pprint
 import time
 
 
-def get_data_type(data_types):
+def get_data_type():
     '''
     Prompts user to select an approved SQLite data type.
     
@@ -12,6 +12,8 @@ def get_data_type(data_types):
     
     Returns: string name of the data type selected
     '''
+    data_types = {1: 'TEXT', 2: 'INTEGER', 3: 'REAL', 4: 'NULL', 5: 'BLOB'}
+    
     for key, label in sorted(data_types.items()):
         print('{0}. {1}'.format(key, label))
 
@@ -25,7 +27,7 @@ def build_attributes(column_names):
     
     for i, name in enumerate(column_names):
         print('\n{}'.format(name))
-        data_type = get_data_type(data_types)
+        data_type = get_data_type()
         attributes[i] = {'name': name, 'data_type': data_type}
 
     return attributes
@@ -34,9 +36,6 @@ def build_attributes(column_names):
 ##################
 # Function Calls #
 ##################
-
-data_types = {1: 'TEXT', 2: 'INTEGER', 3: 'REAL', 4: 'NULL', 5: 'BLOB'}
-
 
 if __name__ == '__main__':
     # Test data

@@ -41,6 +41,7 @@ def create_database(db_name, table_name, attribute_dict, primary_key):
     try:
         cursor.execute(build_table_sql)
         flag = True
+        print('{} database created.'.format(db_name))
 
     except:
         print(sys.exc_info())
