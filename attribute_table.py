@@ -33,6 +33,20 @@ def build_attributes(column_names):
     return attributes
 
 
+def build_key_string(table_name):
+    '''
+    Parameters:
+        - string table name
+
+    Returns:
+        - dictionary of {'key': key_string}
+    '''
+    key_string = ''
+    
+    key_string_dict = {'key': key_string}
+
+    return key_string_dict
+
 ##################
 # Function Calls #
 ##################
