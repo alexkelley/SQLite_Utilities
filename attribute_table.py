@@ -33,10 +33,25 @@ def build_attributes(column_names):
     return attributes
 
 
-def build_key_string(table_name, column_names):
+def add_foreign_key():
+    '''
+    
+    '''
+    fk_string = ''
+    fk_field = input('Field to be foreign key >> ')
+    fk_name = input('Name for foreign key >> ')
+    fk_ref_table = input('Reference table >> ')
+    fk_ref_field = input('Reference field >> ')
+
+    fk_string += 'CONSTRAINT {0} FOREIGN KEY ({1}) REFERENCES {2}({3})'.format(fk_name, fk_field, fk_ref_table, fk_ref_field)
+
+    return fk_string
+
+
+def build_key_string(column_names):
     '''
     Parameters:
-        - string table name
+        - list of column names
 
     Returns:
         - dictionary of {'key': key_string}
@@ -46,28 +61,33 @@ def build_key_string(table_name, column_names):
     key_string_dict = {'key': key_string}
 
     for i, name in enumerate(column_names):
-        print('{0}. {1}'.format(i+1, name))
+        print('{0}. {1}'.format(i, name))
 
-    keys = input('Fields to be the table primary key(s) (separate with comma) >> ')
+    primary_keys = input('Fields to be the table primary key(s) (separate with comma) >> ')
 
-    keys = keys.split()
+    primary_keys = keys.split()
+
+    temp_key_string = ''
+    for i in primary_keys:
+        temp_key_string += '{}, '.format(column_name[int(i)])
 
     pk_name = input('Enter a name for your primary key >> ')
 
-    key_string += '{0}\nPRIMARY KEY '.format(pk_name)
+    key_string += '{0}\nPRIMARY KEY ({1})'.format(pk_name, temp_key_string[:-2])
 
-    ## call function to build foreign key with a while loop 
+    fk_flag = input('Add a foreign key? (Y or N) >> ')
+
+    while fk_flag == 'Y':
+        key_string += ',\n\n'
+              
+        key_string += add_foreign_key()
+
+        fk_flag = input('Add a foreign key? (Y or N) >> ')
     
-    '''
-    CONSTRAINT transaction_pk
-        PRIMARY KEY (transaction_id, company_id),
-
-    CONSTRAINT transactions_fk
-        FOREIGN KEY (company_id)
-            REFERENCES company(company_id)
-    '''
 
     return key_string_dict
+
+
 
 ##################
 # Function Calls #
