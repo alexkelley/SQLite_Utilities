@@ -33,7 +33,7 @@ def build_attributes(column_names):
     return attributes
 
 
-def build_key_string(table_name):
+def build_key_string(table_name, column_names):
     '''
     Parameters:
         - string table name
@@ -41,9 +41,31 @@ def build_key_string(table_name):
     Returns:
         - dictionary of {'key': key_string}
     '''
-    key_string = ''
+    key_string = 'CONSTRAINT '
     
     key_string_dict = {'key': key_string}
+
+    for i, name in enumerate(column_names):
+        print('{0}. {1}'.format(i+1, name))
+
+    keys = input('Fields to be the table primary key(s) (separate with comma) >> ')
+
+    keys = keys.split()
+
+    pk_name = input('Enter a name for your primary key >> ')
+
+    key_string += '{0}\nPRIMARY KEY '.format(pk_name)
+
+    ## call function to build foreign key with a while loop 
+    
+    '''
+    CONSTRAINT transaction_pk
+        PRIMARY KEY (transaction_id, company_id),
+
+    CONSTRAINT transactions_fk
+        FOREIGN KEY (company_id)
+            REFERENCES company(company_id)
+    '''
 
     return key_string_dict
 
