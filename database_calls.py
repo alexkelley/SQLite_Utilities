@@ -1,6 +1,29 @@
 #! /usr/bin/env python3
 import sqlite3
 
+
+def load_data_into_table(db_name, table_name, data_list):
+    '''
+    
+    '''
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()    
+
+    for record in data_list:
+        sql_call = generate_insert(table_name, record)
+
+        try:
+            cursor.execute(sql_call)
+        except:
+            print(sys.exc_info())
+            print(sql_call)
+            break
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
 def create_database(db_name, table_name, attribute_dict, primary_key):
     '''
     Parameters:

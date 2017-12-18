@@ -2,7 +2,7 @@
 
 A collection of general purpose Python utilities for working with SQLite databases
 
-## Done - [create_database.py](https://github.com/alexkelley/SQLite_Utilities/blob/master/create_database.py)
+## Done - [database_calls.py](https://github.com/alexkelley/SQLite_Utilities/blob/master/database_calls.py)
 ## Done - [load_table.py](https://github.com/alexkelley/SQLite_Utilities/blob/master/load_table.py)
 ## Done - [generate_insert_statement.py](https://github.com/alexkelley/SQLite_Utilities/blob/master/generate_insert_statement.py)
 Format the SQL INSERT statement for use in the load_table.py script

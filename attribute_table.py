@@ -54,38 +54,33 @@ def build_key_string(column_names):
         - list of column names
 
     Returns:
-        - dictionary of {'key': key_string}
+        - string specifying primary key and any foreign keys
     '''
     key_string = 'CONSTRAINT '
-    
-    key_string_dict = {'key': key_string}
 
     for i, name in enumerate(column_names):
         print('{0}. {1}'.format(i, name))
 
     primary_keys = input('Fields to be the table primary key(s) (separate with comma) >> ')
 
-    primary_keys = keys.split()
+    primary_keys = primary_keys.split()
 
     temp_key_string = ''
     for i in primary_keys:
-        temp_key_string += '{}, '.format(column_name[int(i)])
+        temp_key_string += '{}, '.format(column_names[int(i)])
 
     pk_name = input('Enter a name for your primary key >> ')
 
-    key_string += '{0}\nPRIMARY KEY ({1})'.format(pk_name, temp_key_string[:-2])
+    key_string += '{0} PRIMARY KEY ({1})'.format(pk_name, temp_key_string[:-2])
 
     fk_flag = input('Add a foreign key? (Y or N) >> ')
 
     while fk_flag == 'Y':
-        key_string += ',\n\n'
-              
-        key_string += add_foreign_key()
+        key_string += ', {}'.format(add_foreign_key())
 
-        fk_flag = input('Add a foreign key? (Y or N) >> ')
-    
+        fk_flag = input('Add another foreign key? (Y or N) >> ')
 
-    return key_string_dict
+    return key_string
 
 
 
@@ -96,4 +91,5 @@ def build_key_string(column_names):
 if __name__ == '__main__':
     # Test data
     column_names = ['cid', 'company', 'licenses', 'dollars']
-    pprint.pprint(build_attributes(column_names))
+    # pprint.pprint(build_attributes(column_names))
+    pprint.pprint(build_key_string(column_names))
