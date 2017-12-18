@@ -24,9 +24,11 @@ def get_data_type():
 
 def build_attributes(column_names):
     attributes = {}
+
+    print('\n### Building attribute table ###')
     
     for i, name in enumerate(column_names):
-        print('\n{}'.format(name))
+        print('\nColumn - {}'.format(name))
         data_type = get_data_type()
         attributes[i] = {'name': name, 'data_type': data_type}
 
@@ -37,18 +39,17 @@ def add_foreign_key():
     '''
     
     '''
-    fk_string = ''
     fk_field = input('Field to be foreign key >> ')
     fk_name = input('Name for foreign key >> ')
     fk_ref_table = input('Reference table >> ')
     fk_ref_field = input('Reference field >> ')
 
-    fk_string += 'CONSTRAINT {0} FOREIGN KEY ({1}) REFERENCES {2}({3})'.format(fk_name, fk_field, fk_ref_table, fk_ref_field)
+    fk_string = '\tCONSTRAINT {0} FOREIGN KEY ({1}) REFERENCES {2}({3})'.format(fk_name, fk_field, fk_ref_table, fk_ref_field)
 
     return fk_string
 
 
-def build_key_string(column_names):
+def build_key_string(table_name, column_names):
     '''
     Parameters:
         - list of column names
@@ -56,27 +57,27 @@ def build_key_string(column_names):
     Returns:
         - string specifying primary key and any foreign keys
     '''
+    print('\n### Adding Primary Key ###\n')
+    
     key_string = 'CONSTRAINT '
 
     for i, name in enumerate(column_names):
         print('{0}. {1}'.format(i, name))
 
-    primary_keys = input('Fields to be the table primary key(s) (separate with comma) >> ')
-
-    primary_keys = primary_keys.split()
+    primary_keys = input('Fields to be the table primary key(s) >> ')
 
     temp_key_string = ''
-    for i in primary_keys:
+    for i in primary_keys.split():
         temp_key_string += '{}, '.format(column_names[int(i)])
 
-    pk_name = input('Enter a name for your primary key >> ')
+    pk_name = table_name + '_pk' #input('Enter a name for your primary key >> ')
 
     key_string += '{0} PRIMARY KEY ({1})'.format(pk_name, temp_key_string[:-2])
 
     fk_flag = input('Add a foreign key? (Y or N) >> ')
 
     while fk_flag == 'Y':
-        key_string += ', {}'.format(add_foreign_key())
+        key_string += ',\n{}'.format(add_foreign_key())
 
         fk_flag = input('Add another foreign key? (Y or N) >> ')
 

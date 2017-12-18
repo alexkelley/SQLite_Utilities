@@ -1,6 +1,8 @@
 #! /usr/bin/env python3
 import sqlite3
+import sys
 
+from generate_insert_statement import generate_insert
 
 def load_data_into_table(db_name, table_name, data_list):
     '''
@@ -53,14 +55,15 @@ def create_database(db_name, table_name, attribute_dict, primary_key):
     cursor = conn.cursor()
 
     cursor.execute('DROP TABLE IF EXISTS {}'.format(table_name))
-
+    
     build_table_sql = 'CREATE TABLE {} (\n'.format(table_name)
 
+
     for key, value in attribute_dict.items():
-        build_table_sql += "   {} {},\n".format(value['column_name'], value['data_type'])
+        build_table_sql += "\t{} {},\n".format(value['name'], value['data_type'])
 
-    build_table_sql += '\n    {}\n);'.format(primary_key)
-
+    build_table_sql += '\n\t{}\n);'.format(primary_key)
+    
     try:
         cursor.execute(build_table_sql)
         flag = True

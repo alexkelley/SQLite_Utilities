@@ -20,7 +20,7 @@ def generate_insert(table_name, field_value_dict):
             value = 'NULL'
 
         if value != 'NULL' and isinstance(value, str):
-            value_string += "'{}', ".format(value.replace("'", ""))
+            value_string += "'{}', ".format(value.replace("'", "").replace("%", "").replace("$", "").replace(",", ""))
         elif isinstance(value, datetime.date):
             value_string += "'{}', ".format(value)
         else:

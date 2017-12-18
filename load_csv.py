@@ -34,8 +34,8 @@ def user_prompt_column_labels(first_row):
 
     Returns a list of column names
     '''
-
-    print(first_row)
+    print('### First row of data from csv file ###\n\n{}\n'.format(first_row))
+    
     flag = input('Does the first row contain column labels (Y/N)? >> ')
 
     if flag == 'Y':
@@ -44,7 +44,12 @@ def user_prompt_column_labels(first_row):
         flag = False
         
     column_labels = []
+    print('\n### Re-name columns in database ###')
     for i, label in enumerate(first_row):
+        label = label.lower()
+        replacement_dict = {'#': 'num', ' ': '_', '%': 'percent'}
+        for key, value in replacement_dict.items():
+            label = label.replace(key, value)
         print('\n{0}: {1}'.format(i, label))
         new_label = input('New label for {} (Enter to leave label unchanged) >> '.format(i))
 
@@ -53,7 +58,7 @@ def user_prompt_column_labels(first_row):
         else:
             column_labels.append(label)
 
-    print('\nColumn labels list created.\n')
+    print('\n### New column labels list created ###\n')
 
     return (column_labels, flag)
 
@@ -98,8 +103,8 @@ def load_csv_main():
     filename = prompt_for_filename()
 
     # check if filesize is acceptable
-    if get_file_size(filename) < 1000000000:
-        print('\nfile:{} is not too big.\n'.format(filename))
+    file_size = get_file_size(filename)
+    print('\nfile:{0} is {1} bytes.\n'.format(filename, file_size))
 
     data, column_names = read_csv(filename)
 
