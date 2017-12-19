@@ -17,4 +17,4 @@ With user prompt, take a list of column labels and select its data type from a l
 ## DONE - build_key.py
 build the primary key / foreign key string
 ## TODO - web ui
-Flask webserver that spins up upon running the script.  Form takes database and table name.  Column labels populate a table with a column for data type (dropdown select box) with inference made from data source.
+Flask webserver that spins up upon running the script.  Form takes database and table name.  Column labels populate a table with a column for data type (dropdown select box) with inference made from data source.  Will need to refactor the script in an MVC way to separate the user interface elements so that the main logic can work with both web UI and CLI. 

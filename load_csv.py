@@ -4,15 +4,6 @@ import csv
 import os
 
 
-def prompt_for_filename():
-    '''
-    Returns a string of the filename
-    '''
-    filename = input("Data file to load >> ")
-
-    return filename
-
-
 def get_file_size(filename):
     '''
     Takes a string filename
@@ -98,10 +89,7 @@ def read_csv(filename):
 # Function Calls #
 ##################
 
-def load_csv_main():
-    # ask user for filename
-    filename = prompt_for_filename()
-
+def load_csv_main(filename):
     # check if filesize is acceptable
     file_size = get_file_size(filename)
     print('\nfile:{0} is {1} bytes.\n'.format(filename, file_size))
