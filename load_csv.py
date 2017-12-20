@@ -37,7 +37,7 @@ def user_prompt_column_labels(first_row):
     column_labels = []
     print('\n### Re-name columns in database ###')
     for i, label in enumerate(first_row):
-        label = label.lower()
+        label = label.lower().strip()
         replacement_dict = {'#': 'num', ' ': '_', '%': 'percent'}
         for key, value in replacement_dict.items():
             label = label.replace(key, value)
