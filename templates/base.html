@@ -14,11 +14,9 @@
 
 <body>
   <h1>Please select a file to upload</h1>
-                                 
-  <form action="/" method="POST">
-    <label>File to upload: </label>
-    <input type="file" name="filename" value="{{ request.form['filename'] }}" />  
-    <button type="submit">Go</button>
+  <form method="POST" action="/">
+    {{ form.csv_file.label }} {{ form.csv_file(size=50) }}
+    <input type="submit" value="Go">
   </form>
 
   {%  if data %}
