@@ -13,19 +13,11 @@ app = Flask(__name__)
 @app.route('/')
 @app.route('/', methods=['POST'])
 def index():
-
-    # get filename from webform
-    
-    data, column_names = load_csv_main(filename)
-
-    # display csv data in tabular format
-    # ui for specifying db_name, table_name and column_names
-    error = None
+    data = ''
     if request.method == 'POST':
-        data.append('success')
-    return render_template("main.html",
-                           data=data,
-                           error=error)
+        filename = form
+        data = ['success', filename]
+    return render_template("base.html", data=data)
 
 
 if __name__ == "__main__":

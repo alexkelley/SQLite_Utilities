@@ -1,0 +1,30 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>Parse CSV and load a SQLite database</title>
+  <meta name="description" content="Simple application to build a database from csv file">
+  <meta name="author" content="Alex Kelley">
+
+  <link rel="stylesheet" href="">
+
+</head>
+
+<body>
+  <h1>Please select a file to upload</h1>
+                                 
+  <form action="/" method="POST">
+    <label>File to upload: </label>
+    <input type="file" name="filename" value="{{ request.form['filename'] }}" />  
+    <button type="submit">Go</button>
+  </form>
+
+  {%  if data %}
+
+  <h2>{{ data }}</h2>
+
+  {% endif %}
+</body>
+</html>

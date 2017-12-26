@@ -7,7 +7,7 @@ from database_calls import create_database, load_data_into_table
 
 db_name = input('Name for database >> ')
 table_name = input('Name for table >> ')
-filename = input("Data file to load >> ")
+filename = input('Data file to load >> ')
 
 data, column_names = load_csv_main(filename)
 
