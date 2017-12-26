@@ -9,7 +9,11 @@ from database_calls import create_database, load_data_into_table
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = ''
+
+with open('app.secrets', 'r') as f:
+    secret_key = f.read().strip()
+
+app.config['SECRET_KEY'] = secret_key
 
 
 @app.route('/')
