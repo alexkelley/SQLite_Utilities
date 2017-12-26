@@ -5,11 +5,13 @@
 <h1>Preprocess CSV data for creating SQLite database</h1>
                                
 <form action="/" method="POST">
-    <label>Enter city #1: </label>
-    <input type="text" name="city1" value="{{ request.form['city1'] }}" />
-    <label>Enter city #2: </label>
-    <input type="text" name="city2" value="{{ request.form['city2'] }}" />
-	<button type="submit">Go</button>
+  <label>File to upload: </label>
+  <input type="file" name="filename" value="{{ request.form['filename'] }}" />  
+  <label>Enter Database name: </label>
+  <input type="text" name="dbname" value="{{ request.form['dbname'] }}" />
+  <label>Enter Table name: </label>
+  <input type="text" name="table_name" value="{{ request.form['table_name'] }}" />
+  <button type="submit">Go</button>
 </form>
 
 <br><hr><br>
@@ -19,7 +21,7 @@
 {% elif data %}
     <table class="centered thick-border">
         <tr>
-            <th>City</th>
+            <th>.CSV data</th>
         </tr>
         {% for d in data %}
             <tr>
