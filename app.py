@@ -9,6 +9,8 @@ from database_calls import create_database, load_data_into_table
 
 app = Flask(__name__)
 
+app.config['SECRET_KEY'] = ''
+
 
 @app.route('/')
 @app.route('/', methods=['POST'])
