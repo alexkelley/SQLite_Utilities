@@ -26,15 +26,24 @@
 
 {% block content %}
   <h1>Please select a file to upload</h1>
-  <form method="POST" action="/">
-    {{ form.csv_file.label }} {{ form.csv_file(size=50) }}
-    <input type="submit" value="Go">
+  <form method="POST" action="/" enctype="multipart/form-data">
+    {{ form.csrf_token }}
+    {{ form.csv_file.label }} {{ form.csv_file }}
+    {{ form.submit }}
   </form>
+  
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <ul class=flashes>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endwith %}
+
 
   {% if data %}
-
   <h2>{{ data }}</h2>
-
   {% endif %}
-
 {% endblock %}

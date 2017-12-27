@@ -1,13 +1,10 @@
 import os
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, flash
 from flask_script import Manager
 from flask_bootstrap import Bootstrap
 
-from flask_wtf import FlaskForm
-#from flask_wtf.file import FileField, FileRequired
-from wtforms import StringField
-from wtforms.validators import DataRequired
+from forms import UploadForm
 
 from attribute_table import build_attributes, build_key_string
 from load_csv import load_csv_main
@@ -24,19 +21,19 @@ app.config['SECRET_KEY'] = secret_key
 manager = Manager(app)
 bootstrap = Bootstrap(app)
 
-class UploadForm(FlaskForm):
-    #csv_file = FileField('Select a file to upload >> ', validators=[FileRequired()])
-    csv_file = StringField('Enter some data:', validators=[DataRequired()])
-    
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
     csv_file = None
     data = None
     form = UploadForm()
-    if form.validate_on_submit():
-        f = form.csv_file.data
-        data = f.filename
-
+    if request.method == 'POST':
+        if form.validate() == False:
+            flash('All fields are required.')
+        else:
+            data = form.csv_file.data
+            flash('Success!')
+            
     return render_template('index.html', form=form, data=data)
 
 
