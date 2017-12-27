@@ -1,6 +1,8 @@
 import os
 
 from flask import Flask, render_template, request
+from flask_script import Manager
+from flask_bootstrap import Bootstrap
 
 from flask_wtf import FlaskForm
 #from flask_wtf.file import FileField, FileRequired
@@ -19,6 +21,8 @@ with open('app.secrets', 'r') as f:
 
 app.config['SECRET_KEY'] = secret_key
 
+manager = Manager(app)
+bootstrap = Bootstrap(app)
 
 class UploadForm(FlaskForm):
     #csv_file = FileField('Select a file to upload >> ', validators=[FileRequired()])
@@ -37,4 +41,4 @@ def index():
 
 
 if __name__ == "__main__":
-    app.run()
+    manager.run()
