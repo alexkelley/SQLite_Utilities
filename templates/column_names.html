@@ -1,6 +1,6 @@
 {% extends "bootstrap/base.html" %}
 
-{% block title %}CSV Parser - Index{% endblock %}
+{% block title %}CSV Parser - Naming{% endblock %}
 
 {% block navbar %}
 <div class="navbar navbar-inverse" role="navigation">
@@ -25,10 +25,11 @@
 
 
 {% block content %}
-  <h1>Please select a file to upload</h1>
+  <h1>Complete the form below</h1>
   <form method="POST" action="/" enctype="multipart/form-data">
     {{ form.csrf_token }}
-    {{ form.csv_file.label }} {{ form.csv_file }}
+    {{ form.db_name.label }} {{ form.db_name }}
+    {{ form.table_name.label }} {{ form.table_name }}
     {{ form.submit }}
   </form>
   

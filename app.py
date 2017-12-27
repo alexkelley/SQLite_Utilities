@@ -1,10 +1,10 @@
 import os
 
-from flask import Flask, render_template, request, flash
+from flask import Flask, render_template, request, flash, session, redirect, url_for
 from flask_script import Manager
 from flask_bootstrap import Bootstrap
 
-from forms import UploadForm
+from forms import UploadForm, ColumnLabelForm
 
 from attribute_table import build_attributes, build_key_string
 from load_csv import load_csv_main
@@ -31,10 +31,17 @@ def index():
         if form.validate() == False:
             flash('All fields are required.')
         else:
-            data = form.csv_file.data
-            flash('Success!')
+            raw_data = form.csv_file.data
+            session['csv_file'] = raw_data.read()
+            return redirect(url_for('column_names'))
             
     return render_template('index.html', form=form, data=data)
+
+@app.route('/column_names', methods=['GET', 'POST'])
+def column_names():
+    form = ColumnLabelForm()
+    data = session['csv_file']
+    return render_template('column_names.html', form=form, data=data)
 
 
 if __name__ == "__main__":
