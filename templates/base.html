@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
 
-  <title>Parse CSV and load a SQLite database</title>
+  <title>{% block title %}{% endblock %}</title>
   <meta name="description" content="Simple application to build a database from csv file">
   <meta name="author" content="Alex Kelley">
 
@@ -13,16 +13,7 @@
 </head>
 
 <body>
-  <h1>Please select a file to upload</h1>
-  <form method="POST" action="/">
-    {{ form.csv_file.label }} {{ form.csv_file(size=50) }}
-    <input type="submit" value="Go">
-  </form>
-
-  {%  if data %}
-
-  <h2>{{ data }}</h2>
-
-  {% endif %}
+  {% block body %}
+  {% endblock %}
 </body>
 </html>

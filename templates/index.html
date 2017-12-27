@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Index - CSV Loader{% endblock %}
+
+{% block body %}
+  <h1>Please select a file to upload</h1>
+  <form method="POST" action="/">
+    {{ form.csv_file.label }} {{ form.csv_file(size=50) }}
+    <input type="submit" value="Go">
+  </form>
+
+  {%  if data %}
+
+  <h2>{{ data }}</h2>
+
+  {% endif %}
+
+{% endblock %}

@@ -30,13 +30,10 @@ def index():
     data = None
     form = UploadForm()
     if form.validate_on_submit():
-        print('in')
         f = form.csv_file.data
         data = f.filename
-        print(data)
 
-    print('out')
-    return render_template('base.html', form=form, data=data)
+    return render_template('index.html', form=form, data=data)
 
 
 if __name__ == "__main__":
