@@ -1,15 +1,21 @@
-{% extends "base.html" %}
+{% extends "bootstrap/base.html" %}
 
 {% block title %}Index - CSV Loader{% endblock %}
 
-{% block body %}
+{% block navbar %}
+<div class="navbar navbar-fixed-top">
+  <!-- ... -->
+</div>
+{% endblock %}
+
+{% block content %}
   <h1>Please select a file to upload</h1>
   <form method="POST" action="/">
     {{ form.csv_file.label }} {{ form.csv_file(size=50) }}
     <input type="submit" value="Go">
   </form>
 
-  {%  if data %}
+  {% if data %}
 
   <h2>{{ data }}</h2>
 
