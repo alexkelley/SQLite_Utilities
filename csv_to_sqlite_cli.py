@@ -3,7 +3,7 @@
 from attribute_table import build_attributes, build_key_string
 from load_csv import load_csv_main
 from database_calls import create_database, load_data_into_table
-
+from shared_utilities import read_csv
 
 db_name = input('Name for database >> ')
 table_name = input('Name for table >> ')
