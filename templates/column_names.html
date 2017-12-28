@@ -25,6 +25,7 @@
 
 
 {% block content %}
+
   <h1>Complete the form below</h1>
   <form method="POST" action="/" enctype="multipart/form-data">
     {{ form.csrf_token }}
@@ -42,5 +43,9 @@
   </ul>
   {% endif %}
   {% endwith %}
- 
+
+  {% if data %}
+  <p>{{ data }}</p>
+  {% endif %}
+  
 {% endblock %}
