@@ -1,4 +1,5 @@
 {% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}CSV Parser - Naming{% endblock %}
 
@@ -27,12 +28,8 @@
 {% block content %}
 
   <h1>Complete the form below</h1>
-  <form method="POST" action="/" enctype="multipart/form-data">
-    {{ form.csrf_token }}
-    {{ form.db_name.label }} {{ form.db_name }}
-    {{ form.table_name.label }} {{ form.table_name }}
-    {{ form.submit }}
-  </form>
+
+  {{ wtf.quick_form(form) }}
   
   {% with messages = get_flashed_messages() %}
   {% if messages %}

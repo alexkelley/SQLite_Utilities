@@ -1,6 +1,10 @@
 import os
 
 from flask import Flask, render_template, request, flash, session, redirect, url_for
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import Required
+
 from flask_script import Manager
 from flask_bootstrap import Bootstrap
 from werkzeug.utils import secure_filename
@@ -48,15 +52,14 @@ def index():
 
 @app.route('/column_names', methods=['GET', 'POST'])
 def column_names():
-    data = {}
-    form = ColumnLabelForm()
+    ## https://stackoverflow.com/questions/22203159/generate-a-dynamic-form-using-flask-wtf-and-sqlalchemy
+    ## http://wtforms.readthedocs.io/en/latest/specific_problems.html
+
     filename = os.path.join(
         app.instance_path,
         'csv_files',
         session['csv_filename']
     )
-
-    data[0] = filename
     
     csv_data = read_csv(filename)
 
@@ -64,9 +67,25 @@ def column_names():
     for i in csv_data[0]:
         column_names.append(clean_column_name(i))
 
-    data[1] = column_names
+    class DynamicForm(FlaskForm):
+        pass
+
+    DynamicForm.db_name = StringField(
+        'Enter a database name:', validators=[Required()])
+
+    DynamicForm.table_name = StringField(
+        'Enter a table name:', validators=[Required()])
+
+    for i, name in enumerate(column_names):
+        setattr(DynamicForm, name, StringField('Column label for field {}: '.format(i+1), default=name))
+
+    DynamicForm.submit = SubmitField()
+
+    form = DynamicForm()
+
+    # need to pass some field formatting instructions to the template
     
-    return render_template('column_names.html', form=form, data=data)
+    return render_template('column_names.html', form=form)
 
 
 if __name__ == "__main__":
