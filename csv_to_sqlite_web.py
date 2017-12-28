@@ -84,8 +84,29 @@ def column_names():
     form = DynamicForm()
 
     # need to pass some field formatting instructions to the template
-    
+
+    if request.method == 'POST':
+        if form.validate() == False:
+            flash('Form did not validate.')
+        else:
+            # retrieve updated column names and values for db_name & table_name
+
+            session['success'] = True
+            
+            return redirect(url_for('confirmation'))
+        
     return render_template('column_names.html', form=form)
+
+
+@app.route('/confirmation')
+def confirmation():
+
+    if session['success']:
+        data = 'success'
+    else:
+        data = 'something went wrong'
+    
+    return render_template('confirmation.html', data=data)
 
 
 if __name__ == "__main__":

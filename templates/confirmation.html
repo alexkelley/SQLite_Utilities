@@ -1,7 +1,6 @@
 {% extends "bootstrap/base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
 
-{% block title %}CSV Parser - Naming{% endblock %}
+{% block title %}CSV Parser - Confirmation{% endblock %}
 
 {% block navbar %}
 <div class="navbar navbar-inverse" role="navigation">
@@ -27,28 +26,14 @@
 
 {% block content %}
 
-  <h1>Set names for new database</h1>
+{% if data %}
 
-  <div style="width: 50%">
-  {{ wtf.quick_form(form) }}
-  </div>
-  
-  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-  <ul class=flashes>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-  {% endwith %}
+<h1>Database created</h1>
 
-  {% if data %}
-<p>data file: {{ data.0 }}</p>
+{% else %}
 
-{% for label in data.1 %}
-<p>{{ label }}</p>
-{% endfor %}
-  {% endif %}
+<h1>Something went wrong</h1>
+
+{% endif%}
   
 {% endblock %}
