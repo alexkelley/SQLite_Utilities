@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 
 from forms import UploadForm, ColumnLabelForm
 
-from shared_utilities import read_csv
+from shared_utilities import read_csv, clean_column_name
 from attribute_table import build_attributes, build_key_string
 from database_calls import create_database, load_data_into_table
 
@@ -48,15 +48,23 @@ def index():
 
 @app.route('/column_names', methods=['GET', 'POST'])
 def column_names():
+    data = {}
     form = ColumnLabelForm()
     filename = os.path.join(
         app.instance_path,
         'csv_files',
         session['csv_filename']
     )
-    
-    data = read_csv(filename)
 
+    data[0] = filename
+    
+    csv_data = read_csv(filename)
+
+    column_names = []
+    for i in csv_data[0]:
+        column_names.append(clean_column_name(i))
+
+    data[1] = column_names
     
     return render_template('column_names.html', form=form, data=data)
 

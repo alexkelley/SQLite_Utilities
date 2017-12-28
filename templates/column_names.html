@@ -45,7 +45,11 @@
   {% endwith %}
 
   {% if data %}
-  <p>{{ data }}</p>
+<p>data file: {{ data.0 }}</p>
+
+{% for label in data.1 %}
+<p>{{ label }}</p>
+{% endfor %}
   {% endif %}
   
 {% endblock %}

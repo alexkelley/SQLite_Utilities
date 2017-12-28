@@ -40,21 +40,11 @@ def clean_column_name(field_value):
         
     data = ''
     
-    replacement_dict = {
-        '#': 'num',
-        #" ": '_',
-        '%': 'percent',
-        '$': '',
-        ',': '',
-        "'": ''
-    }
-
     if field_value != 'NULL' and isinstance(field_value, str):
-        data1 = field_value.lower() #.strip()
+        data1 = field_value.lower().strip().replace(' ', '_')
     
-        for key, value in replacement_dict.items():
-            data = data1.replace(key, value)
-
+        data = data1.replace('#', 'num').replace('%', 'percent').replace('$', '').replace('"', '').replace("'", "").replace(',', '')
+        
     elif isinstance(field_value, datetime.date):
         data = datetime.datetime.strftime(field_value, '%Y-%m-%dT%H-%M-%S')
 
@@ -63,11 +53,6 @@ def clean_column_name(field_value):
 
 
     return data
-
-row_1 = ['Job #', 'Type', 'Invoice Date', 'Customer', 'Job Total', 'Taxes', 'Interest', 'Sub Total', 'Commission $', 'Commission %', 'Labor', 'Labor %', 'Material', 'Material %', 'Royalty', 'Royalty %', 'Other', 'Other %', 'Profit', 'Profit Percent']
-
-for i in row_1:
-    print(clean_column_name(i))
 
 
 
@@ -81,3 +66,21 @@ def clean_data_value(field_value):
     data = ''
 
     return data
+
+
+
+
+
+if __name__ == "__main__":
+
+    row = ['Job #',
+           'Type',
+           "Invoice's Date",
+           '"Customer"',
+           'Job Total',
+           'Commission,$',
+           'Commission %'
+    ]
+
+    for i in row:
+        print(clean_column_name(i))
