@@ -90,9 +90,12 @@ def column_names():
             flash('Form did not validate.')
         else:
             # retrieve updated column names and values for db_name & table_name
+            data_dict = {}
+            for field in form:
+                data_dict[field.name] = field.data
 
-            session['success'] = True
-            
+            session['column_data'] = data_dict
+                        
             return redirect(url_for('confirmation'))
         
     return render_template('column_names.html', form=form)
@@ -101,12 +104,12 @@ def column_names():
 @app.route('/confirmation')
 def confirmation():
 
-    if session['success']:
-        data = 'success'
+    if session['column_data']:
+        column_data = session['column_data']
     else:
-        data = 'something went wrong'
+        column_data = 'No data returned'
     
-    return render_template('confirmation.html', data=data)
+    return render_template('confirmation.html', column_data=column_data)
 
 
 if __name__ == "__main__":
