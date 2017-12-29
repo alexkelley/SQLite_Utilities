@@ -26,7 +26,8 @@
 
 {% block content %}
 
-<p> {{ column_data }}</p>
- 
+{% for column_name, value in column_data.items() %}
+<p>{{ column_name }} - {{ value }}</p>
+ {% endfor %}
 
 {% endblock %}
