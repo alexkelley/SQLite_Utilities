@@ -114,7 +114,11 @@ def build_column_data(data_dict):
         attributes[count] = {'name': name, 'data_type': data_type}
         count += 1
 
-    return attributes
+    column_list = []
+    for value in attributes.values():
+        column_list.append(value['name'])
+
+    return (column_list, attributes)
 
 
 if __name__ == "__main__":

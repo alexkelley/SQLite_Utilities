@@ -23,11 +23,15 @@
 </div>
 {% endblock %}
 
-
 {% block content %}
 
-{% for column_name, value in column_data.items() %}
-<p>{{ column_name }} - {{ value }}</p>
- {% endfor %}
+{% if data %}
+
+  <h1>Database Setup Data</h1>
+  {% for name, value in data.items() %}
+   <p>{{ name }} - {{ value }}</p>
+  {% endfor %}
+
+{% endif %}
 
 {% endblock %}

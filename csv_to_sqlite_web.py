@@ -2,14 +2,14 @@ import os
 
 from flask import Flask, render_template, request, flash, session, redirect, url_for
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, SubmitField
+from wtforms import StringField, SelectField, SelectMultipleField, SubmitField
 from wtforms.validators import Required
 
 from flask_script import Manager
 from flask_bootstrap import Bootstrap
 from werkzeug.utils import secure_filename
 
-from forms import UploadForm, ColumnLabelForm
+from forms import UploadForm
 
 from shared_utilities import read_csv, clean_column_name, build_column_data
 from attribute_table import build_attributes, build_key_string
@@ -84,13 +84,11 @@ def column_names():
 
     form = DynamicForm()
 
-    # need to pass some field formatting instructions to the template
-
     if request.method == 'POST':
         if form.validate() == False:
             flash('Form did not validate.')
         else:
-            # retrieve updated column names and values for db_name & table_name
+            # retrieve updated column names and data types
             data_dict = {}
             for field in form:
                 data_dict[field.name] = field.data
@@ -102,7 +100,7 @@ def column_names():
     return render_template('column_names.html', form=form)
 
 
-@app.route('/primary_key')
+@app.route('/primary_key', methods=['GET', 'POST'])
 def primary_key():
 
     if session['column_data']:
@@ -110,10 +108,47 @@ def primary_key():
     else:
         column_data = 'No data returned'
 
-    attribute_table = build_column_data(column_data)
+    column_names, attribute_table = build_column_data(column_data)
     
-    return render_template('primary_key.html', column_data=attribute_table)
+    class DynamicForm(FlaskForm):
+        pass
+
+    key_choices = []
+    for name in column_names:
+        key_choices.append((name,name))
+        
+    setattr(DynamicForm, 'primary_keys', SelectMultipleField(choices=key_choices))
+    
+    DynamicForm.db_name = StringField('Enter a database name:', validators=[Required()])
+    DynamicForm.table_name = StringField('Enter a table name:', validators=[Required()])
+    DynamicForm.submit = SubmitField()
+    
+    form = DynamicForm()
+
+    if request.method == 'POST':
+        if form.validate() == False:
+            flash('Form did not validate.')
+        else:
+            data_dict = {}
+            for field in form:
+                data_dict[field.name] = field.data
+
+            session['db_setup_data'] = data_dict
+                        
+            return redirect(url_for('confirmation'))
+    
+    return render_template('primary_key.html', form=form, column_data=attribute_table)
 
 
+@app.route('/confirmation')
+def confirmation():
+
+    if session['db_setup_data']:
+        data = session['db_setup_data'] 
+    else:
+        data = 'Failure'
+    
+    return render_template('confirmation.html', data=data)
+    
 if __name__ == "__main__":
     manager.run()
