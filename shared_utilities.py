@@ -3,6 +3,7 @@
 import csv
 import os
 import datetime
+import re
 
     
 def read_csv(filename):
@@ -68,6 +69,32 @@ def clean_data_value(field_value):
     return data
 
 
+def build_column_data(data_dict):
+    '''
+    Parameters:
+    - dictionary of data returned from web form
+
+    Returns
+    - Attribute dictionary
+    '''    
+    attributes = {}
+
+    all_keys = data_dict.keys()
+  
+    col_keys = []
+
+    # match from the start of string, 1 or more digits then an underscore
+    pattern = re.compile(r"^\d+_")
+    
+    for i in all_keys:
+        result = pattern.match(str(i))
+        if result:
+            col_keys.append(i)
+
+    print(sorted(col_keys))
+
+    return attributes
+        
 
 
 
@@ -82,5 +109,16 @@ if __name__ == "__main__":
            'Commission %'
     ]
 
-    for i in row:
-        print(clean_column_name(i))
+    data_dict = {'1_fun_col': 'column1',
+                 '0_good_col': 'column0',
+                 '23_excellent_col': 'column2',
+                 '1_fun_dt': 'TEXT',
+                 '0_good_dt': 'INTEGER',
+                 '23_excellent_dt': 'REAL',
+                 'db_name': 'test.db',
+                 'csrf_token': 'sjfosahgoihngio'
+    }
+    # for i in row:
+    #     print(clean_column_name(i))
+
+    build_column_data(data_dict)

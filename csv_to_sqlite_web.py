@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, render_template, request, flash, session, redirect, url_for
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField
+from wtforms import StringField, SelectField, SubmitField
 from wtforms.validators import Required
 
 from flask_script import Manager
@@ -11,7 +11,7 @@ from werkzeug.utils import secure_filename
 
 from forms import UploadForm, ColumnLabelForm
 
-from shared_utilities import read_csv, clean_column_name
+from shared_utilities import read_csv, clean_column_name, build_column_data
 from attribute_table import build_attributes, build_key_string
 from database_calls import create_database, load_data_into_table
 
@@ -77,7 +77,14 @@ def column_names():
         'Enter a table name:', validators=[Required()])
 
     for i, name in enumerate(column_names):
-        setattr(DynamicForm, name, StringField('Column label for field {}: '.format(i+1), default=name))
+        setattr(DynamicForm, '{0}_{1}_col'.format(i, name), StringField('Field {} label:'.format(i+1), default=name))
+        setattr(DynamicForm, '{0}_{1}_dt'.format(i, name),
+                SelectField('{} data type:'.format(name),
+                            choices=[('TEXT', 'TEXT'),
+                                     ('INTEGER', 'INTEGER'),
+                                     ('REAL', 'REAL'),
+                                     ('NULL', 'NULL'),
+                                     ('BLOB', 'BLOB')]))
 
     DynamicForm.submit = SubmitField()
 
@@ -108,6 +115,8 @@ def confirmation():
         column_data = session['column_data']
     else:
         column_data = 'No data returned'
+
+    build_column_data(column_data)
     
     return render_template('confirmation.html', column_data=column_data)
 
