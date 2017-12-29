@@ -10,18 +10,6 @@ class UploadForm(FlaskForm):
     submit = SubmitField()
 
     
-class ColumnLabelForm(FlaskForm):
+class PrimaryKeyForm(FlaskForm):
     db_name = StringField('Enter a database name:', validators=[Required()])
     table_name = StringField('Enter a table name:', validators=[Required()])
-    
-
-def dynamic_form(data_list):
-    
-    class DynamicForm(FlaskForm):
-        pass
-
-    DynamicForm.db_name = StringField(
-        'Enter a database name:', validators=[Required()])
-
-    for key, value in data_dict.items():
-        setattr(DynamicForm, key, StringField(key.title()))

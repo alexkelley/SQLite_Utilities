@@ -70,12 +70,6 @@ def column_names():
     class DynamicForm(FlaskForm):
         pass
 
-    DynamicForm.db_name = StringField(
-        'Enter a database name:', validators=[Required()])
-
-    DynamicForm.table_name = StringField(
-        'Enter a table name:', validators=[Required()])
-
     for i, name in enumerate(column_names):
         setattr(DynamicForm, '{0}_{1}_col'.format(i, name), StringField('Field {} label:'.format(i+1), default=name))
         setattr(DynamicForm, '{0}_{1}_dt'.format(i, name),
@@ -103,22 +97,22 @@ def column_names():
 
             session['column_data'] = data_dict
                         
-            return redirect(url_for('confirmation'))
+            return redirect(url_for('primary_key'))
         
     return render_template('column_names.html', form=form)
 
 
-@app.route('/confirmation')
-def confirmation():
+@app.route('/primary_key')
+def primary_key():
 
     if session['column_data']:
         column_data = session['column_data']
     else:
         column_data = 'No data returned'
 
-    build_column_data(column_data)
+    attribute_table = build_column_data(column_data)
     
-    return render_template('confirmation.html', column_data=column_data)
+    return render_template('primary_key.html', column_data=attribute_table)
 
 
 if __name__ == "__main__":

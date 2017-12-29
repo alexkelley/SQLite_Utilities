@@ -2,8 +2,10 @@
 
 import csv
 import os
+import itertools
 import datetime
 import re
+from pprint import pprint as pp
 
     
 def read_csv(filename):
@@ -91,11 +93,28 @@ def build_column_data(data_dict):
         if result:
             col_keys.append(i)
 
-    print(sorted(col_keys))
+    # group column names with respective data type
+    temp_dict = {}
+    for i in col_keys:
+        num = i.split('_')[0]
+        if num in temp_dict:
+            temp_dict[num].append(i)
+        else:
+            temp_dict[num] = [i]
+
+    # build attribute table from column groups
+    count = 0
+    for field in temp_dict.values():
+        for value in field:
+            if '_col' in value:
+                name = data_dict[value]
+            elif '_dt' in value:
+                data_type = data_dict[value]
+    
+        attributes[count] = {'name': name, 'data_type': data_type}
+        count += 1
 
     return attributes
-        
-
 
 
 if __name__ == "__main__":
