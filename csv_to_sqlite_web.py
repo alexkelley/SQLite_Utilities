@@ -1,4 +1,6 @@
 import os
+import pickle
+import pprint
 
 from flask import Flask, render_template, request, flash, session, redirect, url_for
 from flask_wtf import FlaskForm
@@ -47,7 +49,16 @@ def index():
             form_data.save(csv_path_filename)
 
             # set session variable for absolute path to csv file
-            session['csv_filename'] = csv_path_filename
+            # Save global variables in a pickle dictionary
+            pickle_file = os.path.join(app.instance_path,
+                                       'csv_files',
+                                       'variables.pkl'
+            )
+            session['pickle_file'] = pickle_file
+            
+            data_dict = {'csv_filename': csv_path_filename}
+            with open(session['pickle_file'], 'wb') as f:
+                pickle.dump(data_dict, f)
             
             return redirect(url_for('column_names'))
             
@@ -58,12 +69,16 @@ def index():
 def column_names():
     ## https://stackoverflow.com/questions/22203159/generate-a-dynamic-form-using-flask-wtf-and-sqlalchemy
     ## http://wtforms.readthedocs.io/en/latest/specific_problems.html
+    
+    # Getting objects back from pickle
+    with open(session['pickle_file'], 'rb') as f:
+        pickle_dict = pickle.load(f)
 
-    csv_data = read_csv(session['csv_filename'])
-
-    # store csv file data as a list of lists
-    session['csv_data'] = csv_data
-
+    csv_data = read_csv(pickle_dict['csv_filename'])
+    
+    # add csv data to the pickle file
+    pickle_dict['csv_data'] = csv_data
+    
     column_names = []
     for i in csv_data[0]:
         column_names.append(clean_column_name(i))
@@ -73,7 +88,7 @@ def column_names():
         pass
 
     DynamicForm.first_row_labels = BooleanField(
-        'Does the first row of data contain labels?')
+        'First row of data contain labels', default=True)
     
     for i, name in enumerate(column_names):
         setattr(DynamicForm, '{0}_{1}_col'.format(i, name),
@@ -99,25 +114,29 @@ def column_names():
             for field in form:
                 data_dict[field.name] = field.data
 
-            session['column_data'] = data_dict
-                        
+            pickle_dict['column_data'] = data_dict
+            with open(session['pickle_file'], 'wb') as f:
+                pickle.dump(pickle_dict, f)
+                
             return redirect(url_for('primary_key'))
         
+    with open(session['pickle_file'], 'wb') as f:
+        pickle.dump(pickle_dict, f)
+           
     return render_template('column_names.html', form=form)
 
 
 @app.route('/primary_key', methods=['GET', 'POST'])
 def primary_key():
 
-    if session['column_data']:
-        column_data = session['column_data']
-    else:
-        column_data = 'No data returned'
+    # Getting objects back from pickle
+    with open(session['pickle_file'], 'rb') as f:
+        pickle_dict = pickle.load(f)
 
-    column_names, table_attributes = build_column_data(column_data)
+    column_names, table_attributes = build_column_data(pickle_dict['column_data'])
 
-    session['column_names'] = column_names
-    session['table_attributes'] = table_attributes
+    pickle_dict['column_names'] = column_names
+    pickle_dict['table_attributes'] = table_attributes
         
     class DynamicForm(FlaskForm):
         pass
@@ -150,42 +169,51 @@ def primary_key():
             for field in form:
                 data_dict[field.name] = field.data
 
-            session['db_setup_data'] = data_dict
+            pickle_dict['db_setup_data'] = data_dict
+            
+            with open(session['pickle_file'], 'wb') as f:
+                pickle.dump(pickle_dict, f)
                         
             return redirect(url_for('confirmation'))
+
+    with open(session['pickle_file'], 'wb') as f:
+        pickle.dump(pickle_dict, f)
     
-    return render_template('primary_key.html', form=form, column_data=table_attributes)
+    return render_template('primary_key.html',
+                           form=form,
+                           column_data=table_attributes)
 
 
 @app.route('/confirmation')
 def confirmation():
+    
+    # Getting objects back from pickle
+    with open(session['pickle_file'], 'rb') as f:
+        pickle_dict = pickle.load(f)
 
-    if session['db_setup_data']:
-        data = session['db_setup_data'] 
-    else:
-        data = 'Failure'
-        
     db_name = os.path.join(app.instance_path,
                            'databases',
-                           session['db_setup_data']['db_name']
+                           pickle_dict['db_setup_data']['db_name']
             )
-    table_name = session['db_setup_data']['table_name']
-    attributes = session['table_attributes']
+    table_name = pickle_dict['db_setup_data']['table_name']
+    attributes = pickle_dict['table_attributes']
     
-    key_columns = session['db_setup_data']['primary_keys']
+    key_columns = pickle_dict['db_setup_data']['primary_keys']
     primary_key_string = build_key_string(table_name, key_columns)
 
     create_database(db_name, table_name, attributes, primary_key_string)
 
     # start at second row of data if first row contains labels
     start_row = 0
-    if session['column_data']['first_row_labels']:
+    if pickle_dict['column_data']['first_row_labels']:
         start_row = 1
         
     data_to_load = map_column_name_to_data_value(
-        session['column_names'], session['csv_data'][start_row:])
+        pickle_dict['column_names'], pickle_dict['csv_data'][start_row:])
     
     load_data_into_table(db_name, table_name, data_to_load)
+
+    data = 'Success!'
     
     return render_template('confirmation.html', data=data)
 

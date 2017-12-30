@@ -91,9 +91,10 @@ def build_column_data(data_dict):
         else:
             temp_dict[num] = [i]
 
-    # build attribute table from column groups
+    # build attribute table and column list from column groups
     count = 0
-    for field in temp_dict.values():
+    column_list = []
+    for key, field in sorted(temp_dict.items()):
         for value in field:
             if '_col' in value:
                 name = data_dict[value]
@@ -101,11 +102,8 @@ def build_column_data(data_dict):
                 data_type = data_dict[value]
     
         attributes[count] = {'name': name, 'data_type': data_type}
+        column_list.append(name)
         count += 1
-
-    column_list = []
-    for value in attributes.values():
-        column_list.append(value['name'])
 
     return (column_list, attributes)
 
