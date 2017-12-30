@@ -2,7 +2,8 @@ import os
 
 from flask import Flask, render_template, request, flash, session, redirect, url_for
 from flask_wtf import FlaskForm
-from wtforms import StringField, SelectField, SelectMultipleField, SubmitField
+from wtforms import (StringField, SelectField, SelectMultipleField,
+                     BooleanField, SubmitField)
 from wtforms.validators import Required
 
 from flask_script import Manager
@@ -60,6 +61,9 @@ def column_names():
 
     csv_data = read_csv(session['csv_filename'])
 
+    # store csv file data as a list of lists
+    session['csv_data'] = csv_data
+
     column_names = []
     for i in csv_data[0]:
         column_names.append(clean_column_name(i))
@@ -68,8 +72,12 @@ def column_names():
     class DynamicForm(FlaskForm):
         pass
 
+    DynamicForm.first_row_labels = BooleanField(
+        'Does the first row of data contain labels?')
+    
     for i, name in enumerate(column_names):
-        setattr(DynamicForm, '{0}_{1}_col'.format(i, name), StringField('Field {} label:'.format(i+1), default=name))
+        setattr(DynamicForm, '{0}_{1}_col'.format(i, name),
+                StringField('Field {} label:'.format(i+1), default=name))
         setattr(DynamicForm, '{0}_{1}_dt'.format(i, name),
                 SelectField('{} data type:'.format(name),
                             choices=[('TEXT', 'TEXT'),
@@ -86,7 +94,7 @@ def column_names():
         if form.validate() == False:
             flash('Form did not validate.')
         else:
-            # retrieve updated column names and data types
+            # retrieve column label flag along with updated column names & data types
             data_dict = {}
             for field in form:
                 data_dict[field.name] = field.data
@@ -108,8 +116,9 @@ def primary_key():
 
     column_names, table_attributes = build_column_data(column_data)
 
+    session['column_names'] = column_names
     session['table_attributes'] = table_attributes
-    
+        
     class DynamicForm(FlaskForm):
         pass
 
@@ -167,8 +176,20 @@ def confirmation():
     primary_key_string = build_key_string(table_name, key_columns)
 
     create_database(db_name, table_name, attributes, primary_key_string)
+
+    # start at second row of data if first row contains labels
+    start_row = 0
+    if session['column_data']['first_row_labels']:
+        start_row = 1
+        
+    data_to_load = map_column_name_to_data_value(
+        session['column_names'], session['csv_data'][start_row:])
+    
+    load_data_into_table(db_name, table_name, data_to_load)
     
     return render_template('confirmation.html', data=data)
+
+
     
 if __name__ == "__main__":
     manager.run()

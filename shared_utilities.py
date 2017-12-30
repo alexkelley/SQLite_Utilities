@@ -196,6 +196,25 @@ def clean_data_value(field_value):
     return data
 
 
+def map_column_name_to_data_value(column_names, csv_data):
+    '''
+    Parameters:
+        - list of column names
+        - list of lists containing csv data
+
+    Returns a list of dictionaries mapping column names to field values 
+    '''
+    data_list = []
+    temp_dict = {}
+    for row in csv_data:
+        for i in range(len(column_names)):
+            temp_dict[column_names[i]] = row[i]
+        data_list.append(temp_dict)
+        temp_dict = {}
+
+    return data_list
+
+            
 def generate_insert(table_name, field_value_dict):
     '''
     Parameters:
@@ -279,8 +298,8 @@ if __name__ == "__main__":
     # for i in row:
     #     print(clean_column_name(i))
 
-    #build_column_data(data_dict)
+    # build_column_data(data_dict)
 
-    table_name = 'JobCost'
-    column_names = ['job_num', 'company_name']
-    print(build_key_string(table_name, column_names))
+    # table_name = 'JobCost'
+    # column_names = ['job_num', 'company_name']
+    # print(build_key_string(table_name, column_names))
