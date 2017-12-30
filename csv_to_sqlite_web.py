@@ -161,7 +161,7 @@ def confirmation():
                            session['db_setup_data']['db_name']
             )
     table_name = session['db_setup_data']['table_name']
-    attributes = session['db_setup_data']['table_attributes']
+    attributes = session['table_attributes']
     
     key_columns = session['db_setup_data']['primary_keys']
     primary_key_string = build_key_string(table_name, key_columns)
