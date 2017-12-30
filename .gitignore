@@ -1,5 +1,6 @@
 *.secrets
 csv_files/
+databases/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

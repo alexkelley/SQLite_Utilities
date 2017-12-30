@@ -10,40 +10,6 @@ import sys
 from pprint import pprint as pp
 
 
-def generate_insert(table_name, field_value_dict):
-    '''
-    Parameters:
-        1. string table_name
-        2. dictionary of values in the form:
-           {column_name1: field_value, 
-            column_name2: field_value,
-            ...}
-    
-    Returns:
-        - string SQLite3 INSERT statement
-    '''
-    value_string = ''
-    column_string = ''
-
-    for label, value in field_value_dict.items():
-        if value is None:
-            value = 'NULL'
-
-        if value != 'NULL' and isinstance(value, str):
-            value_string += "'{}', ".format(value.replace("'", "").replace("%", "").replace("$", "").replace(",", ""))
-        elif isinstance(value, datetime.date):
-            value_string += "'{}', ".format(value)
-        else:
-            value_string += "{}, ".format(value)
-
-        column_string += "{}, ".format(label.replace("'", ""))
-
-        sql_string = "INSERT INTO {0} ({1}) VALUES ({2});".format(
-            table_name, column_string[:-2], value_string[:-2])
-
-    return sql_string
-
-    
 def read_csv(filename):
     '''
     Parameters:
@@ -66,7 +32,7 @@ def read_csv(filename):
 
     return data_list
 
-
+    
 def clean_column_name(field_value):
     '''
     Parameters:
@@ -90,18 +56,6 @@ def clean_column_name(field_value):
     else:
         data = field_value
 
-
-    return data
-
-
-def clean_data_value(field_value):
-    '''
-    Parameters:
-    - string field value
-
-    Returns
-    '''
-    data = ''
 
     return data
 
@@ -156,26 +110,22 @@ def build_column_data(data_dict):
     return (column_list, attributes)
 
 
-def load_data_into_table(db_name, table_name, data_list):
+def build_key_string(table_name, column_names):
     '''
-    
+    Parameters:
+        - list of column names to use in primary key
+
+    Returns:
+        - string specifying primary key and any foreign keys
     '''
-    conn = sqlite3.connect(db_name)
-    cursor = conn.cursor()    
+    temp_key_string = ', '.join(column_names)
 
-    for record in data_list:
-        sql_call = generate_insert(table_name, record)
+    primary_key_name = table_name + '_pk'
 
-        try:
-            cursor.execute(sql_call)
-        except:
-            print(sys.exc_info())
-            print(sql_call)
-            break
+    key_string = 'CONSTRAINT {0} PRIMARY KEY ({1})'.format(
+        primary_key_name, temp_key_string)
 
-    conn.commit()
-    cursor.close()
-    conn.close()
+    return key_string
 
 
 def create_database(db_name, table_name, attribute_dict, primary_key):
@@ -234,6 +184,73 @@ def create_database(db_name, table_name, attribute_dict, primary_key):
     return flag
 
 
+def clean_data_value(field_value):
+    '''
+    Parameters:
+    - string field value
+
+    Returns
+    '''
+    data = ''
+
+    return data
+
+
+def generate_insert(table_name, field_value_dict):
+    '''
+    Parameters:
+        1. string table_name
+        2. dictionary of values in the form:
+           {column_name1: field_value, 
+            column_name2: field_value,
+            ...}
+    
+    Returns:
+        - string SQLite3 INSERT statement
+    '''
+    value_string = ''
+    column_string = ''
+
+    for label, value in field_value_dict.items():
+        if value is None:
+            value = 'NULL'
+
+        if value != 'NULL' and isinstance(value, str):
+            value_string += "'{}', ".format(value.replace("'", "").replace("%", "").replace("$", "").replace(",", ""))
+        elif isinstance(value, datetime.date):
+            value_string += "'{}', ".format(value)
+        else:
+            value_string += "{}, ".format(value)
+
+        column_string += "{}, ".format(label.replace("'", ""))
+
+        sql_string = "INSERT INTO {0} ({1}) VALUES ({2});".format(
+            table_name, column_string[:-2], value_string[:-2])
+
+    return sql_string
+
+
+def load_data_into_table(db_name, table_name, data_list):
+    '''
+    
+    '''
+    conn = sqlite3.connect(db_name)
+    cursor = conn.cursor()    
+
+    for record in data_list:
+        sql_call = generate_insert(table_name, record)
+
+        try:
+            cursor.execute(sql_call)
+        except:
+            print(sys.exc_info())
+            print(sql_call)
+            break
+
+    conn.commit()
+    cursor.close()
+    conn.close()
+
 
 #################
 # Testing Calls #
@@ -262,4 +279,8 @@ if __name__ == "__main__":
     # for i in row:
     #     print(clean_column_name(i))
 
-    build_column_data(data_dict)
+    #build_column_data(data_dict)
+
+    table_name = 'JobCost'
+    column_names = ['job_num', 'company_name']
+    print(build_key_string(table_name, column_names))

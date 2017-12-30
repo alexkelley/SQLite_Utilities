@@ -11,9 +11,7 @@ from werkzeug.utils import secure_filename
 
 from forms import UploadForm
 
-from shared_utilities import read_csv, clean_column_name, build_column_data
-from attribute_table import build_attributes, build_key_string
-from database_calls import create_database, load_data_into_table
+from shared_utilities import *
 
 
 app = Flask(__name__)
@@ -26,6 +24,9 @@ app.config['SECRET_KEY'] = secret_key
 manager = Manager(app)
 bootstrap = Bootstrap(app)
 
+##################
+# View Functions #
+##################
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -35,15 +36,17 @@ def index():
         if form.validate() == False:
             flash('All fields are required.')
         else:
-            raw_data = form.csv_file.data
-            filename = secure_filename(raw_data.filename)
-            raw_data.save(os.path.join(
-                app.instance_path,
-                'csv_files',
-                filename
-            ))
-            
-            session['csv_filename'] = filename
+            # retrive form data and save file to web server
+            form_data = form.csv_file.data
+            csv_filename = secure_filename(form_data.filename)
+            csv_path_filename = os.path.join(app.instance_path,
+                                             'csv_files',
+                                             csv_filename
+            )
+            form_data.save(csv_path_filename)
+
+            # set session variable for absolute path to csv file
+            session['csv_filename'] = csv_path_filename
             
             return redirect(url_for('column_names'))
             
@@ -55,18 +58,13 @@ def column_names():
     ## https://stackoverflow.com/questions/22203159/generate-a-dynamic-form-using-flask-wtf-and-sqlalchemy
     ## http://wtforms.readthedocs.io/en/latest/specific_problems.html
 
-    filename = os.path.join(
-        app.instance_path,
-        'csv_files',
-        session['csv_filename']
-    )
-    
-    csv_data = read_csv(filename)
+    csv_data = read_csv(session['csv_filename'])
 
     column_names = []
     for i in csv_data[0]:
         column_names.append(clean_column_name(i))
 
+    # create a form dynamically from first row of csv data
     class DynamicForm(FlaskForm):
         pass
 
@@ -108,19 +106,29 @@ def primary_key():
     else:
         column_data = 'No data returned'
 
-    column_names, attribute_table = build_column_data(column_data)
+    column_names, table_attributes = build_column_data(column_data)
+
+    session['table_attributes'] = table_attributes
     
     class DynamicForm(FlaskForm):
         pass
 
+    # build field list for multi-select box in form
     key_choices = []
     for name in column_names:
-        key_choices.append((name,name))
+        key_choices.append((name, name))
         
-    setattr(DynamicForm, 'primary_keys', SelectMultipleField(choices=key_choices))
+    setattr(DynamicForm,
+            'primary_keys',
+            SelectMultipleField(
+                'Use Ctrl to select more than one field for the primary key:',
+                choices=key_choices)
+    )
     
-    DynamicForm.db_name = StringField('Enter a database name:', validators=[Required()])
-    DynamicForm.table_name = StringField('Enter a table name:', validators=[Required()])
+    DynamicForm.db_name = StringField(
+        'Enter a database name:', validators=[Required()])
+    DynamicForm.table_name = StringField(
+        'Enter a table name:', validators=[Required()])
     DynamicForm.submit = SubmitField()
     
     form = DynamicForm()
@@ -137,7 +145,7 @@ def primary_key():
                         
             return redirect(url_for('confirmation'))
     
-    return render_template('primary_key.html', form=form, column_data=attribute_table)
+    return render_template('primary_key.html', form=form, column_data=table_attributes)
 
 
 @app.route('/confirmation')
@@ -147,6 +155,18 @@ def confirmation():
         data = session['db_setup_data'] 
     else:
         data = 'Failure'
+        
+    db_name = os.path.join(app.instance_path,
+                           'databases',
+                           session['db_setup_data']['db_name']
+            )
+    table_name = session['db_setup_data']['table_name']
+    attributes = session['db_setup_data']['table_attributes']
+    
+    key_columns = session['db_setup_data']['primary_keys']
+    primary_key_string = build_key_string(table_name, key_columns)
+
+    create_database(db_name, table_name, attributes, primary_key_string)
     
     return render_template('confirmation.html', data=data)
     
