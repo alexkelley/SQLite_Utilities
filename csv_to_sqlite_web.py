@@ -33,6 +33,7 @@ bootstrap = Bootstrap(app)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+   
     form = UploadForm()
     
     if request.method == 'POST':
@@ -67,8 +68,6 @@ def index():
 
 @app.route('/column_names', methods=['GET', 'POST'])
 def column_names():
-    ## https://stackoverflow.com/questions/22203159/generate-a-dynamic-form-using-flask-wtf-and-sqlalchemy
-    ## http://wtforms.readthedocs.io/en/latest/specific_problems.html
     
     # Getting objects back from pickle
     with open(session['pickle_file'], 'rb') as f:

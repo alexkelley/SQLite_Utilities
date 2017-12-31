@@ -1,46 +1,14 @@
-{% extends "bootstrap/base.html" %}
+{% extends "csv_base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}CSV Parser - Naming{% endblock %}
 
-{% block navbar %}
-<div class="navbar navbar-inverse" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">CSV-to-DB</a>
-        </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="/">Home</a></li>
-            </ul>
-        </div>
-    </div>
-</div>
-{% endblock %}
+{% block csv_content %}
 
+  <h1>Edit column names and select data types</h1>
 
-{% block content %}
-
-  <h1>Edit column names and data types</h1>
-
-  <div style="width: 50%">
+  <div class="form-group">
   {{ wtf.quick_form(form) }}
   </div>
   
-  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-  <ul class=flashes>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-  {% endwith %}
-
 {% endblock %}
