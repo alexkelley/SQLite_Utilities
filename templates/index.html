@@ -1,45 +1,18 @@
-{% extends "bootstrap/base.html" %}
+{% extends "csv_base.html" %}
 
 {% block title %}CSV Parser - Index{% endblock %}
 
-{% block navbar %}
-<div class="navbar navbar-inverse" role="navigation">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">CSV-to-DB</a>
-        </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="/">Home</a></li>
-            </ul>
-        </div>
-    </div>
-</div>
-{% endblock %}
-
-
-{% block content %}
-  <h1>Please select a file to upload</h1>
-  <form method="POST" action="/" enctype="multipart/form-data">
-    {{ form.csrf_token }}
-    {{ form.csv_file.label }} {{ form.csv_file }}
-    {{ form.submit }}
-  </form>
+{% block csv_content %}
+<div class="container">
   
-  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-  <ul class=flashes>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-  {% endwith %}
- 
+  <h1>Upload a CSV file into a SQLite Database</h1>
+  <div class="form-group">
+    <form method="POST" action="/" enctype="multipart/form-data">
+      {{ form.csrf_token }}
+      {{ form.csv_file.label }} {{ form.csv_file }}
+      {{ form.submit }}
+    </form>
+  </div>
+
+</div>
 {% endblock %}
