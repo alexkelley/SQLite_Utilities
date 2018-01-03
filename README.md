@@ -9,17 +9,17 @@ csv_to_sqlite_web.py is a Flask web application to:
 
 ## Installation
 
-`git clone https://github.com/alexkelley/sqlite-utilities.git
+`git clone https://github.com/alexkelley/sqlite-utilities.git`
 
 Create a virtual environment for Python3
 
 From the main file directory,
-` pip install requirements.txt
+`pip install requirements.txt`
 
 Run the program
-` python csv_to_sqlite_web.py runserver
+`python csv_to_sqlite_web.py runserver`
 
-Then navigate in a web brower to http://127.0.0.1:5000/ 
+Then navigate in a web brower to `http://127.0.0.1:5000/`
 
 ## Future
 
