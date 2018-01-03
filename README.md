@@ -4,7 +4,6 @@
 * assign data types to each attribute
 * create a SQLite database.
 
-
 ## Installation
 
 `git clone https://github.com/alexkelley/sqlite-utilities.git`
@@ -23,6 +22,7 @@ Then navigate in a web brower to `http://127.0.0.1:5000/`
 
 ## Future
 
+* open in the browser automatically
 * re-implement `csv_to_sqlite_cli.py`, command line interface version
 * error handling
 * tests
